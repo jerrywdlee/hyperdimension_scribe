@@ -1,6 +1,6 @@
 {
   "name": "hyperdimension_scribe",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "An analyze made for QR code",
   "main": "app.js",
   "scripts": {
@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/jerrywdlee/hyperdimension_scribe#readme",
   "dependencies": {
+    "coffee-script": "^1.10.0",
+    "express": "^4.14.0",
+    "express-cluster": "0.0.4",
+    "express-useragent": "^0.2.4",
     "mysql": "^2.11.1"
   }
 }

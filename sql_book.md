@@ -33,6 +33,88 @@ CREATE TABLE auths (
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
                     deleted TINYINT not null default 0);
 ```
+
+## 媒体表
+```sql
+CREATE TABLE media (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    name text CHARACTER SET utf8 COLLATE utf8_bin,
+                    -- media_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
+                    email text CHARACTER SET utf8 COLLATE utf8_general_ci, -- 不分大小写
+                    sns text CHARACTER SET utf8 COLLATE utf8_bin,
+                    homepage text CHARACTER SET utf8 COLLATE utf8_bin,
+                    media_profile text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+## 商品表
+```sql
+CREATE TABLE items (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    name text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
+                    item_page text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_profile text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+## 推广方案
+```sql
+CREATE TABLE scenarios (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    scenario text CHARACTER SET utf8 COLLATE utf8_bin,
+                    scenario_uuid VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
+                    media_id INT UNSIGNED NOT NULL,
+                    item_id INT UNSIGNED NOT NULL,
+                    price_per_view FLOAT DEFAULT 0,
+                    price_per_buy FLOAT DEFAULT 0,
+                    scenario_profile text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+## 点击记录
+```sql
+CREATE TABLE view_histories (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    scenario_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,
+                    customer_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,
+                    ip_address text CHARACTER SET utf8 COLLATE utf8_bin,
+                    user_agent text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+## 购买记录
+```sql
+CREATE TABLE conversion_histories (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    scenario_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,
+                    customer_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,
+                    purchase_url text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+```php
+$sql = "CREATE TABLE conversion_histories (\n"
+   . " id INT UNSIGNED primary key AUTO_INCREMENT,\n"
+   . " scenario_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,\n"
+   . " customer_uuid text CHARACTER SET utf8 COLLATE utf8_bin ,\n"
+   . " purchase_url text CHARACTER SET utf8 COLLATE utf8_bin,\n"
+   . " created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC\n"
+   . " updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新\n"
+   . " deleted TINYINT not null default 0)";
+```
+
+
 ## date转换
 ```javascript
 > Date.now().toString(36)
