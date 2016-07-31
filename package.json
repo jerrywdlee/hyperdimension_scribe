@@ -1,0 +1,22 @@
+{
+  "name": "hyperdimension_scribe",
+  "version": "1.0.0",
+  "description": "An analyze made for QR code",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerrywdlee/hyperdimension_scribe.git"
+  },
+  "author": "Jerry Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerrywdlee/hyperdimension_scribe/issues"
+  },
+  "homepage": "https://github.com/jerrywdlee/hyperdimension_scribe#readme",
+  "dependencies": {
+    "mysql": "^2.11.1"
+  }
+}
