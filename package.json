@@ -21,6 +21,7 @@
     "express": "^4.14.0",
     "express-cluster": "0.0.4",
     "express-useragent": "^0.2.4",
-    "mysql": "^2.11.1"
+    "mysql": "^2.11.1",
+    "redis": "^2.6.2"
   }
 }
