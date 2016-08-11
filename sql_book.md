@@ -1,12 +1,23 @@
 # 设置DB
 ## phpMyAdmin中
-```
+```sh
 用户名 : hyper_scribe
 主机 : '%'和'localhost'各一
 密码 : hyper_scribe(临时)
 同名DB : hyper_scribe
 ```
 
+## redis中
+```sh
+设置密码：
+127.0.0.1:6379> CONFIG set requirepass "hyper_scribe" (临时)
+查看密码：
+127.0.0.1:6379> AUTH "hyper_scribe"
+OK
+127.0.0.1:6379> CONFIG get requirepass
+1) "requirepass"
+2) "hyper_scribe"
+```
 # 生成TABLE
 ## 管理员
 ```sql
@@ -56,6 +67,13 @@ CREATE TABLE items (
                     name text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
                     item_page text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_line text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_fb text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_messenger text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_twitter text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_instagram text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_qq text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_wechat text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_profile text CHARACTER SET utf8 COLLATE utf8_bin,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
@@ -127,5 +145,20 @@ $sql = "CREATE TABLE conversion_histories (\n"
 '2016-07-31'
 > date.toLocaleTimeString()
 '02:12:35'
+
+```
+
+## SELECT语句
+### SELECT item urls
+```sql
+SELECT item_page,item_page_line,item_page_fb,item_page_messenger,
+       item_page_twitter,item_page_instagram,item_page_wechat,item_page_qq
+FROM items AS i, scenarios AS s WHERE s.scenario_uuid = ?
+AND i.id = s.item_id AND s.deleted <> 1 AND i.deleted <> 1
+ORDER BY i.updated_at DESC;
+```
+
+## INSERT语句
+```sql
 
 ```

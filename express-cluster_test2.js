@@ -28,7 +28,7 @@ cluster(function(worker) {
       res.redirect("http://www.google.com/?rd=ssl#q="+req.params.param);
       console.log("Function: Search "+req.params.param);
   });
-  http://153.120.158.89:3033
+  //http://153.120.158.89:3033
   app.get('/demo/:param', function(req, res) {
       //res.send('respond user Info params:' + req.params.params);
       //res.end();

@@ -1,5 +1,11 @@
-var redis = require("redis"),
-    client = redis.createClient();
+var redis = require("redis");
+var redis_config = {
+  host : "127.0.0.1",
+  port : 6379,
+  auth_pass : "hyper_scribe"
+}
+var client = redis.createClient(redis_config);
+
 
 // if you'd like to select database 3, instead of 0 (default), call
 // client.select(3, function() { /* ... */ });
