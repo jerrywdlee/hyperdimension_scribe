@@ -67,6 +67,8 @@ CREATE TABLE items (
                     name text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
                     item_page text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_iphone text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_android text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_line text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_fb text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_messenger text CHARACTER SET utf8 COLLATE utf8_bin,
@@ -74,6 +76,7 @@ CREATE TABLE items (
                     item_page_instagram text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_qq text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_wechat text CHARACTER SET utf8 COLLATE utf8_bin,
+                    item_page_alipay text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_profile text CHARACTER SET utf8 COLLATE utf8_bin,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
@@ -151,8 +154,9 @@ $sql = "CREATE TABLE conversion_histories (\n"
 ## SELECT语句
 ### SELECT item urls
 ```sql
-SELECT item_page,item_page_line,item_page_fb,item_page_messenger,
-       item_page_twitter,item_page_instagram,item_page_wechat,item_page_qq
+SELECT item_page,item_page_iphone,item_page_android,item_page_line,item_page_fb,
+      item_page_messenger,item_page_twitter,item_page_instagram,
+      item_page_qq,item_page_wechat,item_page_alipay
 FROM items AS i, scenarios AS s WHERE s.scenario_uuid = ?
 AND i.id = s.item_id AND s.deleted <> 1 AND i.deleted <> 1
 ORDER BY i.updated_at DESC;

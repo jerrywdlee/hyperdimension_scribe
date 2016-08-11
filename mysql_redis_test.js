@@ -64,16 +64,18 @@ cluster(function(worker) {
 
 function redirect_target(req, res) {
   var scenario_uuid = req.params.param
-  var targrt_urls = {}
+  var target_urls = {}
   redis_client.get(scenario_uuid,function (err, reply) {
     if (err) {
       console.error(err);
       res.status(500).send(err)
     }
     if (reply) {
+      target_urls = JSON.parse(reply.toString());
+      check_user_agent(req, res, target_urls)
+      console.log("Redis!");
       console.log(reply);
-      targrt_urls = JSON.parse(reply.toString());
-      res.send(JSON.stringify(targrt_urls,null,'<br/>')) // test send
+      //res.send(JSON.stringify(target_urls,null,'<br/>')) // test send
       redis_client.ttl(scenario_uuid, function (err, ttl) {
         if (ttl < 10) {
           redis_client.expire(scenario_uuid, 3600);//reset expire time to 1 hour
@@ -86,15 +88,59 @@ function redirect_target(req, res) {
           res.status(500).send(err)
         }
         if (rows[0]) {
-          targrt_urls = rows[0];
-          res.send(JSON.stringify(targrt_urls,null,'<br/>')) // test send
+          target_urls = rows[0];
+          check_user_agent(req, res, target_urls)
+          //res.send(JSON.stringify(target_urls,null,'<br/>')) // test send
+          console.log("MySql!");
           console.log(rows[0]);
-          redis_client.set(scenario_uuid, JSON.stringify(targrt_urls), redis.print);
+          redis_client.set(scenario_uuid, JSON.stringify(target_urls), redis.print);
           redis_client.expire(scenario_uuid, 3600);//expire time to 1 hour
         }else {
-          res.status(404).send("Whoops!")
+          res.status(404).send("Whoops!")// test 404
         }
       });
     }
   })
+}
+
+function check_user_agent(req, res, target_urls) {
+  if (req.useragent.source.indexOf('Line') != -1) {
+    //res.status(302).redirect(target_urls.item_page_line)
+    redirect_302(res, target_urls.item_page_line, target_urls)
+  }else if (req.useragent.source.indexOf('QQ') != -1) {
+    //res.status(302).redirect(target_urls.item_page_qq)
+    redirect_302(res, target_urls.item_page_qq, target_urls)
+  }else if (req.useragent.source.indexOf('MicroMessenger') != -1) {
+    //res.status(302).redirect(target_urls.item_page_wechat)
+    redirect_302(res, target_urls.item_page_wechat, target_urls)
+  }else if (req.useragent.source.indexOf('FB') != -1) {
+    if (req.useragent.source.indexOf('Messenger') != -1) {
+      //res.status(302).redirect(target_urls.item_page_messenger)
+      redirect_302(res, target_urls.item_page_messenger, target_urls)
+    }else {
+      //res.status(302).redirect(target_urls.item_page_fb)
+      redirect_302(res, target_urls.item_page_fb, target_urls)
+    }
+  }else if (req.useragent.source.indexOf('Alipay') != -1) {
+    redirect_302(res, target_urls.item_page_alipay, target_urls)
+  }else if (req.useragent.isiPhone || req.useragent.isiPod) {
+    redirect_302(res, target_urls.item_page_iphone, target_urls)
+  }else if (req.useragent.isAndroid) {
+    redirect_302(res, target_urls.item_page_android, target_urls)
+  }else {
+    //res.status(302).redirect(target_urls.item_page)
+    redirect_302(res, target_urls.item_page, target_urls)
+  }
+}
+
+function redirect_302(res, target, target_urls) {
+  if (target && target != "") {
+    res.status(302).redirect(target)
+  }else {
+    if (target_urls.item_page) {
+      res.status(302).redirect(target_urls.item_page && target_urls.item_page !="")
+    }else {
+      res.status(404).send("Whoops!")// test 404
+    }
+  }
 }
