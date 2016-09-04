@@ -9,6 +9,7 @@
 
 ## redis中
 ```sh
+redis的密码随重启而消失
 设置密码：
 127.0.0.1:6379> CONFIG set requirepass "hyper_scribe" (临时)
 查看密码：
@@ -67,6 +68,7 @@ CREATE TABLE items (
                     name text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
                     item_page text CHARACTER SET utf8 COLLATE utf8_bin,
+                    variety_item_pages text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_iphone text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_android text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_line text CHARACTER SET utf8 COLLATE utf8_bin,
@@ -78,6 +80,19 @@ CREATE TABLE items (
                     item_page_wechat text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_page_alipay text CHARACTER SET utf8 COLLATE utf8_bin,
                     item_profile text CHARACTER SET utf8 COLLATE utf8_bin,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
+                    deleted TINYINT not null default 0);
+```
+
+## 判断逻辑
+```sql
+CREATE TABLE user_agents (
+                    id INT UNSIGNED primary key AUTO_INCREMENT,
+                    name text CHARACTER SET utf8 COLLATE utf8_bin,
+                    user_agent_code VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
+                    seq INT UNSIGNED not null default 0,
+                    conditions VARCHAR(300) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT 'true',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- create timestamp UTC
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 自动更新
                     deleted TINYINT not null default 0);
@@ -163,6 +178,10 @@ ORDER BY i.updated_at DESC;
 ```
 
 ## INSERT语句
+### user_agents
 ```sql
-
+INSERT INTO `user_agents`( `name`, `user_agent_code`, `conditions`) VALUES ("WeiXin","wechat","req.useragent.source.indexOf('MicroMessenger') != -1");
+INSERT INTO `user_agents`( `name`, `user_agent_code`, `conditions`) VALUES ("支付宝","alipay","req.useragent.source.indexOf('Alipay') != -1");
+INSERT INTO `user_agents`( `name`, `user_agent_code`, `conditions`) VALUES ("iPhone","iphone","req.useragent.isiPhone || req.useragent.isiPod");
+INSERT INTO `user_agents`( `name`, `user_agent_code`, `conditions`) VALUES ("Android","android","req.useragent.isAndroid");
 ```

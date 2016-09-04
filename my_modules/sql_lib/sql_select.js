@@ -3,7 +3,15 @@ var SqlQueries = {
             + "item_page_twitter,item_page_instagram,item_page_wechat,item_page_qq,item_page_alipay "
             + "FROM items AS i, scenarios AS s WHERE s.scenario_uuid = ? "
             + "AND i.id = s.item_id AND s.deleted <> 1 AND i.deleted <> 1 "
-            + "ORDER BY i.updated_at DESC;"
+            + "ORDER BY i.updated_at DESC;",
+
+  condition_for_judge : "SELECT user_agent_code,conditions FROM user_agents WHERE deleted <> 1 ORDER BY seq, id",
+
+  item_urls_plus : "SELECT item_page, variety_item_pages "
+                 + "FROM items AS i, scenarios AS s WHERE s.scenario_uuid = ? "
+                 + "AND i.id = s.item_id AND s.deleted <> 1 AND i.deleted <> 1 "
+                 + "ORDER BY i.updated_at DESC;",
+
 }
 
 module.exports = SqlQueries;

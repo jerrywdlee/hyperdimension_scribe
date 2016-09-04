@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jerrywdlee/hyperdimension_scribe#readme",
   "dependencies": {
+    "accept-language": "^2.0.17",
     "coffee-script": "^1.10.0",
     "express": "^4.14.0",
     "express-cluster": "0.0.4",

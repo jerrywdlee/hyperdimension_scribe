@@ -23,6 +23,7 @@ const http = require('http');
 const express = require('express');
 const cluster = require('express-cluster');
 const useragent = require('express-useragent');
+const acceptLanguage = require('accept-language');
 
 let app = express();
 let server = http.createServer(app);
@@ -36,6 +37,15 @@ cluster(function(worker) {
   app.get('/', function(req, res) {
       //console.log(req.useragent);
       res.send('hello from worker #' + worker.id +"<br/>" +JSON.stringify(req.useragent,null,"<br/>"));
+      //ソースIPの取得
+      console.log("address is "+req.connection.remoteAddress);
+      //User-Agentの取得
+      console.log("ua is "+JSON.stringify(req.headers['user-agent']));
+      //他ヘッダー
+      //console.log("headers is "+JSON.stringify(req.headers));
+      //言語
+      console.log("lang is " + req.headers["accept-language"]);
+      console.log(acceptLanguage.parse(req.headers["accept-language"]))
   });
 
   app.get('/:param', function(req, res, next) {
