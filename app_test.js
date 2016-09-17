@@ -1,22 +1,42 @@
+const yaml = require('js-yaml');
+const fs   = require('fs');
+
+
 // redis
 var redis = require("redis");
-var redis_config = {
-  host : "127.0.0.1",
-  port : 6379,
-  auth_pass : "hyper_scribe"
+var redis_config = {}
+try {
+  redis_config = yaml.safeLoad(fs.readFileSync(__dirname+'/configs/redis_config.yml', 'utf8'));
+} catch (e) {
+  console.log(e);
+  redis_config = {
+    //host : "127.0.0.1",
+    //port : 6379,
+    //auth_pass : "hyper_scribe"
+  }
 }
+
+
 var redis_client = redis.createClient(redis_config);
 
 // mysql
 var mysql = require('mysql');
 var sql = require(__dirname+'/my_modules/sql_lib/sql_select.js')
-var mysql_pool  = mysql.createPool({
-  connectionLimit : 10,
-  host     : 'localhost',
-  user     : 'hyper_scribe',
-  password : 'hyper_scribe',
-  database : 'hyper_scribe'
-});
+var mysql_config = {}
+try {
+  mysql_pool_config = yaml.safeLoad(fs.readFileSync(__dirname+'/configs/mysql_config.yml', 'utf8'));
+} catch (e) {
+  console.log(e);
+  mysql_pool_config = {
+    //connectionLimit : 10,
+    //host     : 'localhost',
+    //port     : 3306,
+    //user     : 'hyper_scribe',
+    //password : 'hyper_scribe',
+    //database : 'hyper_scribe'
+  }
+}
+var mysql_pool  = mysql.createPool(mysql_pool_config);
 
 
 const http = require('http');
@@ -161,6 +181,33 @@ function redirect_target(req, res) {
   counter ++
   var scenario_uuid = req.params.param
   var target_urls = {}
+  Promise.all([judge_user_agent(req, res),get_val_redis(scenario_uuid,sql.item_urls_plus,[scenario_uuid])])
+  .then((value) => {
+    //console.log(value[0]);
+    //console.log(value[1]);
+    var val = value[0]
+    value[1] = value[1][0]? value[1][0] :value[1];
+    //console.log(value);
+    console.log(counter);
+    console.log("ua is "+JSON.stringify(req.headers['user-agent']));
+    console.log("lang is " + req.headers["accept-language"]);
+    console.log(acceptLanguage.parse(req.headers["accept-language"]))
+
+    var target_urls = JSON.parse(value[1].variety_item_pages);
+    target_urls["item_page"] = value[1].item_page
+    //console.log(target_urls[val]);
+    if (target_urls[val] && target_urls[val] != "") {
+      res.status(302).redirect(target_urls[val])
+    }else if (target_urls["item_page"] && target_urls["item_page"] != "") {
+      res.status(302).redirect(target_urls["item_page"])
+    }else {
+      res.status(404).send("Whoops!")
+    }
+  }).catch((err) => {
+    catch_error(res,err)
+    console.log(err);
+  })
+  /*
   judge_user_agent(req, res)
   .then((val) => {
     get_val_redis(scenario_uuid,sql.item_urls_plus,[scenario_uuid])
@@ -188,6 +235,7 @@ function redirect_target(req, res) {
     catch_error(res,err)
     console.log(err);
   })
+  */
 }
 
 function catch_error(res,err) {
