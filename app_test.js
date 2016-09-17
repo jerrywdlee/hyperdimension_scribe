@@ -7,12 +7,13 @@ var redis = require("redis");
 var redis_config = {}
 try {
   redis_config = yaml.safeLoad(fs.readFileSync(__dirname+'/configs/redis_config.yml', 'utf8'));
+  //console.log(redis_config);
 } catch (e) {
   console.log(e);
   redis_config = {
-    //host : "127.0.0.1",
-    //port : 6379,
-    //auth_pass : "hyper_scribe"
+    host : "127.0.0.1",
+    port : 6379,
+    auth_pass : "hyper_scribe"
   }
 }
 
@@ -25,15 +26,16 @@ var sql = require(__dirname+'/my_modules/sql_lib/sql_select.js')
 var mysql_config = {}
 try {
   mysql_pool_config = yaml.safeLoad(fs.readFileSync(__dirname+'/configs/mysql_config.yml', 'utf8'));
+  //console.log(mysql_pool_config);
 } catch (e) {
   console.log(e);
   mysql_pool_config = {
-    //connectionLimit : 10,
-    //host     : 'localhost',
-    //port     : 3306,
-    //user     : 'hyper_scribe',
-    //password : 'hyper_scribe',
-    //database : 'hyper_scribe'
+    connectionLimit : 10,
+    host     : 'localhost',
+    port     : 3306,
+    user     : 'hyper_scribe',
+    password : 'hyper_scribe',
+    database : 'hyper_scribe'
   }
 }
 var mysql_pool  = mysql.createPool(mysql_pool_config);
